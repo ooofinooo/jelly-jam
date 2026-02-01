@@ -9,12 +9,6 @@
                 <v-icon class="mr-2" color="primary">mdi-guitar-electric</v-icon>
                 <span class="text-primary">Jelly</span><span class="text-secondary">Jam</span>
               </h1>
-              <div class="mt-2 d-flex justify-center">
-                <ThemeSelector
-                  v-model:theme-name="sessionStore.themeName"
-                  v-model:dark-mode="sessionStore.darkMode"
-                />
-              </div>
             </div>
 
             <ChordDisplay
@@ -51,71 +45,13 @@
             </v-alert>
 
             <v-card class="pa-3 mb-16" variant="outlined">
-              <v-row dense>
-                <v-col cols="6">
-                  <KeySelector
-                    v-model:selected-key="sessionStore.selectedKey"
-                    v-model:mode="sessionStore.selectedMode"
-                    :disabled="sessionStore.isPlaying"
-                  />
-                </v-col>
-                <v-col cols="6" class="pl-6">
-                  <v-switch
-                    v-model="sessionStore.use7ths"
-                    label="7ths"
-                    color="primary"
-                    hide-details
-                    density="compact"
-                    :disabled="sessionStore.isPlaying"
-                  />
-                  <div class="d-flex align-center mt-2">
-                    <v-btn
-                      :icon="sessionStore.metronomeEnabled ? 'mdi-metronome' : 'mdi-metronome-tick'"
-                      :color="sessionStore.metronomeEnabled ? 'primary' : 'grey-darken-1'"
-                      variant="text"
-                      density="compact"
-                      size="x-small"
-                      @click="sessionStore.metronomeEnabled = !sessionStore.metronomeEnabled"
-                    />
-                    <v-slider
-                      v-model="sessionStore.metronomeVolume"
-                      :min="0"
-                      :max="100"
-                      :step="1"
-                      :disabled="!sessionStore.metronomeEnabled"
-                      color="primary"
-                      track-color="grey-darken-3"
-                      hide-details
-                      density="compact"
-                      class="flex-grow-1 ml-1"
-                      @update:model-value="setMetronomeVolume"
-                    />
-                  </div>
-                  <div class="d-flex align-center mt-1">
-                    <v-btn
-                      icon="mdi-piano"
-                      :color="sessionStore.droneEnabled ? 'primary' : 'grey-darken-1'"
-                      variant="text"
-                      density="compact"
-                      size="x-small"
-                      @click="sessionStore.droneEnabled = !sessionStore.droneEnabled"
-                    />
-                    <v-slider
-                      v-model="sessionStore.droneVolume"
-                      :min="0"
-                      :max="100"
-                      :step="1"
-                      :disabled="!sessionStore.droneEnabled"
-                      color="primary"
-                      track-color="grey-darken-3"
-                      hide-details
-                      density="compact"
-                      class="flex-grow-1 ml-1"
-                      @update:model-value="setDroneVolume"
-                    />
-                  </div>
-                </v-col>
-              </v-row>
+              <KeySelector
+                v-model:selected-key="sessionStore.selectedKey"
+                v-model:mode="sessionStore.selectedMode"
+                v-model:use7ths="sessionStore.use7ths"
+                :disabled="sessionStore.isPlaying"
+                class="mb-2"
+              />
 
               <ChordSelector
                 v-model="sessionStore.selectedNumerals"
@@ -137,24 +73,72 @@
                 :disabled="sessionStore.isPlaying"
               />
 
+              <v-divider class="my-3" />
+
+              <div class="text-subtitle-2 text-medium-emphasis mb-2">Volume</div>
+              <div class="d-flex align-center">
+                <v-btn
+                  :icon="sessionStore.metronomeEnabled ? 'mdi-metronome' : 'mdi-metronome-tick'"
+                  :color="sessionStore.metronomeEnabled ? 'primary' : 'grey-darken-1'"
+                  variant="text"
+                  density="compact"
+                  size="x-small"
+                  @click="sessionStore.metronomeEnabled = !sessionStore.metronomeEnabled"
+                />
+                <v-slider
+                  v-model="sessionStore.metronomeVolume"
+                  :min="0"
+                  :max="100"
+                  :step="1"
+                  :disabled="!sessionStore.metronomeEnabled"
+                  color="primary"
+                  track-color="grey-darken-3"
+                  hide-details
+                  density="compact"
+                  class="flex-grow-1 ml-1"
+                  @update:model-value="setMetronomeVolume"
+                />
+              </div>
+              <div class="d-flex align-center mt-2">
+                <v-btn
+                  icon="mdi-piano"
+                  :color="sessionStore.droneEnabled ? 'primary' : 'grey-darken-1'"
+                  variant="text"
+                  density="compact"
+                  size="x-small"
+                  @click="sessionStore.droneEnabled = !sessionStore.droneEnabled"
+                />
+                <v-slider
+                  v-model="sessionStore.droneVolume"
+                  :min="0"
+                  :max="100"
+                  :step="1"
+                  :disabled="!sessionStore.droneEnabled"
+                  color="primary"
+                  track-color="grey-darken-3"
+                  hide-details
+                  density="compact"
+                  class="flex-grow-1 ml-1"
+                  @update:model-value="setDroneVolume"
+                />
+              </div>
+
               </v-card>
           </v-col>
         </v-row>
       </v-container>
     </v-main>
-    <div class="version-label">v0.4</div>
+    <div class="version-label">v0.6</div>
   </v-app>
 </template>
 
 <script setup>
-import { onMounted, onUnmounted, watch } from 'vue'
-import { useTheme } from 'vuetify'
+import { onUnmounted } from 'vue'
 import * as Tone from 'tone'
 import { useSessionStore } from './stores/sessionStore'
 import { usePracticeSession } from './composables/usePracticeSession'
 
 import ChordDisplay from './components/ChordDisplay.vue'
-import ThemeSelector from './components/ThemeSelector.vue'
 import KeySelector from './components/KeySelector.vue'
 import ChordSelector from './components/ChordSelector.vue'
 import TempoControl from './components/TempoControl.vue'
@@ -164,15 +148,6 @@ import MetronomeIndicator from './components/MetronomeIndicator.vue'
 
 const sessionStore = useSessionStore()
 const { start, stop, cleanup, setDroneVolume, setMetronomeVolume } = usePracticeSession()
-const theme = useTheme()
-
-
-function applyTheme() {
-  const mode = sessionStore.darkMode ? 'dark' : 'light'
-  theme.global.name.value = `${sessionStore.themeName}-${mode}`
-}
-
-watch(() => [sessionStore.themeName, sessionStore.darkMode], applyTheme)
 
 const handlePlay = async () => {
   // Unlock audio on iOS - must happen in user gesture handler
@@ -186,10 +161,6 @@ const handlePlay = async () => {
 const handleStop = () => {
   stop()
 }
-
-onMounted(() => {
-  applyTheme()
-})
 
 onUnmounted(() => {
   cleanup()

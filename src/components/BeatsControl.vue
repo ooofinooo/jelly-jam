@@ -10,12 +10,14 @@
       color="primary"
       variant="outlined"
       divided
+      density="compact"
       :disabled="disabled"
     >
       <v-btn
         v-for="beats in beatOptions"
         :key="beats"
         :value="beats"
+        size="small"
       >
         {{ beats }}
       </v-btn>
@@ -24,7 +26,7 @@
 </template>
 
 <script setup>
-const beatOptions = [2, 3, 4, 6, 8]
+const beatOptions = [1, 2, 3, 4, 5, 6, 7, 8]
 
 defineProps({
   modelValue: {

@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia'
 import { ref, watch } from 'vue'
-import { getRelativeKey, convertNumeralsToRelative } from '../modules/musicTheory'
+import { convertNumeralsByPosition } from '../modules/musicTheory'
 
 export const useSessionStore = defineStore('session', () => {
   const selectedKey = ref('C')
@@ -13,8 +13,6 @@ export const useSessionStore = defineStore('session', () => {
   const droneEnabled = ref(true)
   const droneVolume = ref(30)
   const metronomeVolume = ref(50)
-  const themeName = ref('purple')
-  const darkMode = ref(true)
 
   const isPlaying = ref(false)
   const isLoading = ref(false)
@@ -23,13 +21,9 @@ export const useSessionStore = defineStore('session', () => {
   const currentBeat = ref(0)
   const error = ref(null)
 
-  watch(selectedMode, (newMode, oldMode) => {
-    // Convert to relative key
-    const newKey = getRelativeKey(selectedKey.value, oldMode)
-    selectedKey.value = newKey
-
-    // Convert numerals to relative equivalents
-    const convertedNumerals = convertNumeralsToRelative(selectedNumerals.value, oldMode)
+  watch(selectedMode, (newMode) => {
+    // Convert numerals by position (same degree in new mode)
+    const convertedNumerals = convertNumeralsByPosition(selectedNumerals.value, newMode)
     selectedNumerals.value = convertedNumerals.length > 0 ? convertedNumerals : (newMode === 'minor' ? ['i', 'iv', 'v'] : ['I', 'IV', 'V'])
   })
 
@@ -82,8 +76,6 @@ export const useSessionStore = defineStore('session', () => {
     droneEnabled,
     droneVolume,
     metronomeVolume,
-    themeName,
-    darkMode,
     isPlaying,
     isLoading,
     currentChord,

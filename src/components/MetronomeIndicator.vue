@@ -31,20 +31,20 @@ defineProps({
 
 <style scoped>
 .metronome-indicator {
-  height: 28px;
+  height: 20px;
 }
 
 .beat-dot {
-  width: 16px;
-  height: 16px;
+  width: 10px;
+  height: 10px;
   border-radius: 50%;
   background-color: rgba(255, 255, 255, 0.15);
   transition: all 0.1s ease;
 }
 
 .beat-dot.beat-accent {
-  width: 20px;
-  height: 20px;
+  width: 12px;
+  height: 12px;
 }
 
 .beat-dot.beat-active {

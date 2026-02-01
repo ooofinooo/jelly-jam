@@ -2,7 +2,7 @@
   <div>
     <div class="d-flex justify-space-between align-center mb-1">
       <span class="text-subtitle-2 text-medium-emphasis">Tempo</span>
-      <span class="text-h6 font-weight-bold">{{ modelValue }} BPM</span>
+      <span class="text-subtitle-1 font-weight-bold text-medium-emphasis">{{ modelValue }} BPM</span>
     </div>
     <v-slider
       :model-value="modelValue"

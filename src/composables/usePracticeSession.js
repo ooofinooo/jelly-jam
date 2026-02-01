@@ -83,13 +83,22 @@ export function usePracticeSession() {
   }
 
   function stop() {
+    // Clear our scheduled event first
     if (scheduledEventId.value !== null) {
       audioEngine.clearSchedule(scheduledEventId.value)
       scheduledEventId.value = null
     }
 
+    // Stop transport (also cancels all events)
     audioEngine.stopTransport()
+
+    // Release chord immediately
     audioEngine.releaseChord()
+
+    // Release again after a tick to catch any stragglers
+    setTimeout(() => {
+      audioEngine.releaseChord()
+    }, 50)
 
     beatCount = 0
     chordIndex = 0

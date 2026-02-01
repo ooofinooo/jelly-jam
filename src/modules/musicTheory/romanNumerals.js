@@ -52,3 +52,23 @@ export function convertNumeralsToRelative(numerals, fromMode) {
   const map = fromMode === 'major' ? MAJOR_TO_MINOR_MAP : MINOR_TO_MAJOR_MAP
   return numerals.map(n => map[n] || n).filter(Boolean)
 }
+
+// Convert numerals by position (degree) when switching modes but keeping same key
+export function convertNumeralsByPosition(numerals, toMode) {
+  const targetNumerals = toMode === 'major' ? ROMAN_NUMERALS_MAJOR : ROMAN_NUMERALS_MINOR
+  const sourceNumerals = toMode === 'major' ? ROMAN_NUMERALS_MINOR : ROMAN_NUMERALS_MAJOR
+
+  // Build a degree-to-numeral map for the target mode
+  const degreeToNumeral = {}
+  for (const [numeral, info] of Object.entries(targetNumerals)) {
+    degreeToNumeral[info.degree] = numeral
+  }
+
+  return numerals.map(n => {
+    const sourceInfo = sourceNumerals[n]
+    if (sourceInfo) {
+      return degreeToNumeral[sourceInfo.degree]
+    }
+    return null
+  }).filter(Boolean)
+}

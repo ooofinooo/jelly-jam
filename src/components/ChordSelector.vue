@@ -20,7 +20,8 @@
       </div>
     </div>
 
-    <div v-if="modelValue.length > 0" class="selected-chords mt-3">
+    <div class="text-subtitle-2 text-medium-emphasis mb-2 mt-3">Sequence</div>
+    <div v-if="modelValue.length > 0" class="selected-chords">
       <span
         v-for="(numeral, index) in modelValue"
         :key="index"
@@ -31,7 +32,7 @@
         <span v-if="index < modelValue.length - 1" class="chord-separator">→</span>
       </span>
     </div>
-    <div v-else class="text-medium-emphasis text-body-2 mt-3">
+    <div v-else class="selected-chords text-medium-emphasis text-body-2">
       Tap chords above to build your progression
     </div>
   </div>
@@ -87,7 +88,7 @@ function getChordSymbol(numeral) {
 
 function getChordNotes(numeral) {
   const chord = getChordFromRomanNumeral(props.selectedKey, props.mode, numeral, props.use7ths)
-  return chord ? chord.notes.join(' | ') : ''
+  return chord ? chord.notes.join('•') : ''
 }
 </script>
 

@@ -1,19 +1,19 @@
-import { ROOT_NOTES, ALL_NOTES, buildScale, getNoteAtInterval, getRelativeKey, usesFlats } from './keys.js'
+import { ROOT_NOTES, ALL_NOTES, buildScale, getRelativeKey, usesFlats, getNoteIndex } from './keys.js'
 import { CHORD_FORMULAS, getChordNotes, getChordSymbol } from './chords.js'
-import { getRomanNumerals, getRomanNumeralList, convertNumeralsToRelative } from './romanNumerals.js'
+import { getRomanNumerals, getRomanNumeralList, convertNumeralsToRelative, convertNumeralsByPosition } from './romanNumerals.js'
 
 export {
   ROOT_NOTES,
   ALL_NOTES,
   CHORD_FORMULAS,
   buildScale,
-  getNoteAtInterval,
   getRelativeKey,
   getChordNotes,
   getChordSymbol,
   getRomanNumerals,
   getRomanNumeralList,
-  convertNumeralsToRelative
+  convertNumeralsToRelative,
+  convertNumeralsByPosition
 }
 
 export function getChordFromRomanNumeral(key, mode, numeral, use7ths = false) {
@@ -27,8 +27,7 @@ export function getChordFromRomanNumeral(key, mode, numeral, use7ths = false) {
 
   const root = scale[numeralInfo.degree]
   const quality = use7ths ? numeralInfo.quality7 : numeralInfo.quality
-  const preferFlats = usesFlats(key, mode)
-  const notes = getChordNotes(root, quality, preferFlats)
+  const notes = getChordNotes(root, quality, scale)
   const symbol = getChordSymbol(root, quality)
 
   return {
@@ -53,7 +52,11 @@ export function getRandomChord(key, mode, selectedNumerals, use7ths = false) {
 
 export function chordNotesToMidi(notes, octave = 3) {
   const midiNotes = notes.map(note => {
-    const noteIndex = ALL_NOTES.indexOf(note)
+    let noteIndex = ALL_NOTES.indexOf(note)
+    if (noteIndex === -1) {
+      // Handle flats
+      noteIndex = getNoteIndex(note)
+    }
     return (octave + 1) * 12 + noteIndex
   })
   return midiNotes

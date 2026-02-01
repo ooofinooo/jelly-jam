@@ -57,10 +57,16 @@ export function useAudioEngine() {
     sampler.value.releaseAll()
 
     const noteNames = notes.map(note => {
-      if (typeof note === 'string' && !note.match(/\d$/)) {
-        return note + '3'
+      // Handle combined notation like "C#/Db" - use just the first part
+      let noteName = note
+      if (typeof noteName === 'string' && noteName.includes('/')) {
+        noteName = noteName.split('/')[0]
       }
-      return note
+      // Add octave if not present
+      if (typeof noteName === 'string' && !noteName.match(/\d$/)) {
+        noteName = noteName + '3'
+      }
+      return noteName
     })
 
     sampler.value.triggerAttack(noteNames, Tone.now())
@@ -68,7 +74,11 @@ export function useAudioEngine() {
 
   function releaseChord() {
     if (!sampler.value) return
-    sampler.value.releaseAll()
+    try {
+      sampler.value.releaseAll(Tone.now())
+    } catch (e) {
+      // Ignore errors during release
+    }
   }
 
   function playMetronomeClick(isAccent = false, enabled = true) {
@@ -109,6 +119,7 @@ export function useAudioEngine() {
 
   function stopTransport() {
     Tone.getTransport().stop()
+    Tone.getTransport().cancel() // Cancel all scheduled events
     Tone.getTransport().position = 0
   }
 
