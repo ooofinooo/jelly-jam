@@ -128,7 +128,7 @@
         </v-row>
       </v-container>
     </v-main>
-    <div class="version-label">v0.6</div>
+    <div class="version-label">v0.7</div>
   </v-app>
 </template>
 

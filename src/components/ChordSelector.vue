@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="text-subtitle-2 text-medium-emphasis mb-2 mt-4">
-      Chord Progression (tap to add, tap chord in sequence to remove)
+      Chord Progression (tap to add)
     </div>
     <div class="d-flex flex-wrap pt-2">
       <div v-for="numeral in numerals" :key="numeral" class="chord-chip-wrapper ma-1 mt-2">
@@ -20,7 +20,7 @@
       </div>
     </div>
 
-    <div class="text-subtitle-2 text-medium-emphasis mb-2 mt-3">Sequence</div>
+    <div class="text-subtitle-2 text-medium-emphasis mb-2 mt-3">Sequence (tap to remove)</div>
     <div v-if="modelValue.length > 0" class="selected-chords">
       <span
         v-for="(numeral, index) in modelValue"
